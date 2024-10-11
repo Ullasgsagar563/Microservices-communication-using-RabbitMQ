@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  producer:
+    build: ./producer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  consumer_one:
+    build: ./consumer_one
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  consumer_two:
+    build: ./consumer_two
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  consumer_three:
+    build: ./consumer_three
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  consumer_four:
+    build: ./consumer_four
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  database_service:
+    build: ./database_service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
